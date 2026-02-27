@@ -52,7 +52,8 @@ Add to your `.cursor/mcp.json`:
       "env": {
         "BYBIT_API_KEY": "your-api-key",
         "BYBIT_API_SECRET": "your-api-secret",
-        "BYBIT_TESTNET": "true"
+        "BYBIT_TESTNET": "true",
+        "BYBIT_MODE": "read"
       }
     }
   }
@@ -67,8 +68,19 @@ Add to your `.cursor/mcp.json`:
 | `BYBIT_API_SECRET` | — | API secret from Bybit |
 | `BYBIT_TESTNET` | `true` | Use testnet (`true`) or mainnet (`false`) |
 | `BYBIT_MODE` | `read` | Permission mode: `read`, `trade`, or `full` |
+| `BYBIT_RECV_WINDOW` | — | Request receive window in ms (e.g. `5000`) |
 
-## 4. Verify
+## 4. Permission Modes
+
+| Mode | Allowed Tools |
+|------|---------------|
+| `read` | Market data, account info, all read-only queries |
+| `trade` | Everything in `read` + orders, cancel, leverage, TP/SL |
+| `full` | Everything in `trade` + internal transfers |
+
+HIGH-risk write operations (place_order, amend_order, cancel_all_orders, set_leverage, internal_transfer) use a **confirmation flow** — the server returns a summary first, and the AI must call `confirm_order` to execute.
+
+## 5. Verify
 
 Ask your AI assistant:
 

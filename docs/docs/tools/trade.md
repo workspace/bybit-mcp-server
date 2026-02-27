@@ -4,15 +4,75 @@ sidebar_position: 2
 
 # Trade Tools
 
-Tools for order management. Requires `trade` or `full` permission mode.
+Tools for order management. Requires `trade` or `full` permission mode for write operations.
 
 :::warning
 Trade tools interact with real orders. Always test on **testnet** first.
 :::
 
-## place_order
+## Read-only
 
-Create a new order.
+### get_open_orders
+
+Query unfilled or partially filled orders.
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `category` | string | Yes | `spot`, `linear`, `inverse`, `option` |
+| `symbol` | string | No | Trading pair |
+| `baseCoin` | string | No | Base coin (linear/inverse only) |
+| `orderId` | string | No | Order ID |
+| `orderLinkId` | string | No | User custom order ID |
+| `limit` | int | No | Max 50, default 20 |
+| `cursor` | string | No | Pagination cursor |
+
+---
+
+### get_order_history
+
+Query past order history.
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `category` | string | Yes | `spot`, `linear`, `inverse`, `option` |
+| `symbol` | string | No | Trading pair |
+| `orderId` | string | No | Order ID |
+| `orderLinkId` | string | No | User custom order ID |
+| `orderStatus` | string | No | `New`, `PartiallyFilled`, `Filled`, `Cancelled`, etc. |
+| `limit` | int | No | Max 50, default 20 |
+| `cursor` | string | No | Pagination cursor |
+
+---
+
+### get_trade_history
+
+Query trade execution history.
+
+**Parameters:**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| `category` | string | Yes | `spot`, `linear`, `inverse`, `option` |
+| `symbol` | string | No | Trading pair |
+| `orderId` | string | No | Order ID |
+| `startTime` | int | No | Start timestamp (ms) |
+| `endTime` | int | No | End timestamp (ms) |
+| `limit` | int | No | Max 100, default 50 |
+| `cursor` | string | No | Pagination cursor |
+
+---
+
+## Write (requires confirmation)
+
+The following tools use the **confirmation flow**: the server returns an order summary with a `confirmation_id` first. The AI must call `confirm_order` with that ID to execute.
+
+### place_order
+
+Create a new order. **HIGH risk — requires confirmation.**
 
 **Parameters:**
 
@@ -25,16 +85,18 @@ Create a new order.
 | `qty` | string | Yes | Order quantity |
 | `price` | string | No | Required for Limit orders |
 | `timeInForce` | string | No | `GTC`, `IOC`, `FOK`, `PostOnly` |
+| `orderLinkId` | string | No | User custom order ID |
+| `reduceOnly` | bool | No | `true` = close position only |
 | `takeProfit` | string | No | Take profit price |
 | `stopLoss` | string | No | Stop loss price |
 
-**Safety:** This tool uses the confirmation flow. The server returns an order summary first, requiring explicit confirmation before execution.
+**Example prompt:** "Buy 0.01 BTC at market price"
 
 ---
 
-## amend_order
+### amend_order
 
-Modify an existing order.
+Modify an existing order. **HIGH risk — requires confirmation.**
 
 **Parameters:**
 
@@ -42,29 +104,19 @@ Modify an existing order.
 |------|------|----------|-------------|
 | `category` | string | Yes | Product type |
 | `symbol` | string | Yes | Trading pair |
-| `orderId` | string | No | Order ID (either this or orderLinkId) |
+| `orderId` | string | No | Order ID (either this or `orderLinkId`) |
+| `orderLinkId` | string | No | User custom order ID |
 | `qty` | string | No | New quantity |
 | `price` | string | No | New price |
+| `triggerPrice` | string | No | New trigger price |
+| `takeProfit` | string | No | New take profit price |
+| `stopLoss` | string | No | New stop loss price |
 
 ---
 
-## cancel_order
+### cancel_all_orders
 
-Cancel a single order.
-
-**Parameters:**
-
-| Name | Type | Required | Description |
-|------|------|----------|-------------|
-| `category` | string | Yes | Product type |
-| `symbol` | string | Yes | Trading pair |
-| `orderId` | string | No | Order ID (either this or orderLinkId) |
-
----
-
-## cancel_all_orders
-
-Cancel all open orders for a category.
+Cancel all open orders for a category. **HIGH risk — requires confirmation.**
 
 **Parameters:**
 
@@ -72,30 +124,36 @@ Cancel all open orders for a category.
 |------|------|----------|-------------|
 | `category` | string | Yes | Product type |
 | `symbol` | string | No | Specific symbol (cancels all if omitted) |
+| `baseCoin` | string | No | Base coin |
+| `settleCoin` | string | No | Settle coin |
 
 ---
 
-## get_open_orders
+## Write (no confirmation)
 
-Get current open/unfilled orders (read-only).
+### cancel_order
+
+Cancel a single order. **MEDIUM risk — no confirmation required.**
 
 **Parameters:**
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | `category` | string | Yes | Product type |
-| `symbol` | string | No | Trading pair |
+| `symbol` | string | Yes | Trading pair |
+| `orderId` | string | No | Order ID (either this or `orderLinkId`) |
+| `orderLinkId` | string | No | User custom order ID |
 
 ---
 
-## get_order_history
+## confirm_order
 
-Get past order history (read-only).
+Execute a previously confirmed order. This is a cross-cutting tool registered at the server level.
 
 **Parameters:**
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `category` | string | Yes | Product type |
-| `symbol` | string | No | Trading pair |
-| `limit` | int | No | Number of records |
+| `confirmation_id` | string | Yes | UUID returned from a HIGH-risk tool |
+
+Confirmations expire after **5 minutes**.

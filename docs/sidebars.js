@@ -6,7 +6,7 @@ const sidebars = {
     {
       type: "category",
       label: "Tools Reference",
-      items: ["tools/market", "tools/trade", "tools/account"],
+      items: ["tools/market", "tools/trade", "tools/account", "tools/position", "tools/asset"],
     },
   ],
 };
