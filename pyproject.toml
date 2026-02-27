@@ -34,7 +34,7 @@ dev = [
 ]
 
 [project.scripts]
-bybit-mcp-server = "bybit_mcp.server:main"
+bybit-mcp-server = "bybit_mcp_server.server:main"
 
 [project.urls]
 Homepage = "https://github.com/workspace/bybit-mcp-server"
