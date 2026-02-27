@@ -27,10 +27,10 @@ Write operations (trading, transfers) include multiple safety layers:
 
 ```bash
 # Using uvx (recommended)
-uvx bybit-mcp
+uvx bybit-mcp-server
 
 # Or install from PyPI
-pip install bybit-mcp
+pip install bybit-mcp-server
 ```
 
 See [Getting Started](./getting-started) for full setup instructions.

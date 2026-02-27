@@ -27,7 +27,7 @@ Add to your `claude_desktop_config.json`:
   "mcpServers": {
     "bybit": {
       "command": "uvx",
-      "args": ["bybit-mcp"],
+      "args": ["bybit-mcp-server"],
       "env": {
         "BYBIT_API_KEY": "your-api-key",
         "BYBIT_API_SECRET": "your-api-secret",
@@ -48,7 +48,7 @@ Add to your `.cursor/mcp.json`:
   "mcpServers": {
     "bybit": {
       "command": "uvx",
-      "args": ["bybit-mcp"],
+      "args": ["bybit-mcp-server"],
       "env": {
         "BYBIT_API_KEY": "your-api-key",
         "BYBIT_API_SECRET": "your-api-secret",

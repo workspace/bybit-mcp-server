@@ -3,13 +3,13 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "bybit-mcp"
+name = "bybit-mcp-server"
 version = "0.1.0"
 description = "A Model Context Protocol server for Bybit V5 API"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "workspace" }]
+authors = [{ name = "ryukimin" }]
 keywords = ["mcp", "model-context-protocol", "bybit", "cryptocurrency", "trading"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -34,13 +34,13 @@ dev = [
 ]
 
 [project.scripts]
-bybit-mcp = "bybit_mcp.server:main"
+bybit-mcp-server = "bybit_mcp.server:main"
 
 [project.urls]
-Homepage = "https://github.com/workspace/bybit-mcp"
-Documentation = "https://workspace.github.io/bybit-mcp"
-Repository = "https://github.com/workspace/bybit-mcp"
-Issues = "https://github.com/workspace/bybit-mcp/issues"
+Homepage = "https://github.com/workspace/bybit-mcp-server"
+Documentation = "https://workspace.github.io/bybit-mcp-server"
+Repository = "https://github.com/workspace/bybit-mcp-server"
+Issues = "https://github.com/workspace/bybit-mcp-server/issues"
 
 [tool.ruff]
 line-length = 120

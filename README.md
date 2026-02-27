@@ -1,4 +1,4 @@
-# bybit-mcp
+# bybit-mcp-server
 
 A [Model Context Protocol](https://modelcontextprotocol.io/) server for the [Bybit](https://bybit.com) V5 API.
 
@@ -7,7 +7,7 @@ Connect AI assistants (Claude, Cursor, etc.) to Bybit for market data, trading, 
 ## Quick Start
 
 ```bash
-uvx bybit-mcp
+uvx bybit-mcp-server
 ```
 
 ## MCP Client Configuration
@@ -21,7 +21,7 @@ Add to `claude_desktop_config.json`:
   "mcpServers": {
     "bybit": {
       "command": "uvx",
-      "args": ["bybit-mcp"],
+      "args": ["bybit-mcp-server"],
       "env": {
         "BYBIT_API_KEY": "your-api-key",
         "BYBIT_API_SECRET": "your-api-secret",
@@ -41,7 +41,7 @@ Add to `.cursor/mcp.json`:
   "mcpServers": {
     "bybit": {
       "command": "uvx",
-      "args": ["bybit-mcp"],
+      "args": ["bybit-mcp-server"],
       "env": {
         "BYBIT_API_KEY": "your-api-key",
         "BYBIT_API_SECRET": "your-api-secret",
@@ -74,15 +74,15 @@ Add to `.cursor/mcp.json`:
 ## Development
 
 ```bash
-git clone https://github.com/workspace/bybit-mcp.git
-cd bybit-mcp
+git clone https://github.com/workspace/bybit-mcp-server.git
+cd bybit-mcp-server
 uv sync --all-groups
-uv run bybit-mcp
+uv run bybit-mcp-server
 ```
 
 ## Documentation
 
-Full docs at [workspace.github.io/bybit-mcp](https://workspace.github.io/bybit-mcp)
+Full docs at [workspace.github.io/bybit-mcp-server](https://workspace.github.io/bybit-mcp-server)
 
 ## License
 

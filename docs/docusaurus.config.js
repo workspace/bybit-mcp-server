@@ -8,10 +8,10 @@ const config = {
   favicon: "img/favicon.ico",
 
   url: "https://workspace.github.io",
-  baseUrl: "/bybit-mcp/",
+  baseUrl: "/bybit-mcp-server/",
 
   organizationName: "workspace",
-  projectName: "bybit-mcp",
+  projectName: "bybit-mcp-server",
   deploymentBranch: "gh-pages",
 
   onBrokenLinks: "throw",
@@ -30,7 +30,7 @@ const config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.js",
           editUrl:
-            "https://github.com/workspace/bybit-mcp/tree/main/docs",
+            "https://github.com/workspace/bybit-mcp-server/tree/main/docs",
         },
         blog: false,
         theme: {
@@ -53,7 +53,7 @@ const config = {
             label: "Docs",
           },
           {
-            href: "https://github.com/workspace/bybit-mcp",
+            href: "https://github.com/workspace/bybit-mcp-server",
             label: "GitHub",
             position: "right",
           },
@@ -74,16 +74,16 @@ const config = {
             items: [
               {
                 label: "GitHub",
-                href: "https://github.com/workspace/bybit-mcp",
+                href: "https://github.com/workspace/bybit-mcp-server",
               },
               {
                 label: "PyPI",
-                href: "https://pypi.org/project/bybit-mcp/",
+                href: "https://pypi.org/project/bybit-mcp-server/",
               },
             ],
           },
         ],
-        copyright: `Copyright \u00a9 ${new Date().getFullYear()} bybit-mcp contributors. Built with Docusaurus.`,
+        copyright: `Copyright \u00a9 ${new Date().getFullYear()} bybit-mcp-server contributors. Built with Docusaurus.`,
       },
       prism: {
         theme: themes.github,

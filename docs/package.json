@@ -1,5 +1,5 @@
 {
-  "name": "bybit-mcp-docs",
+  "name": "bybit-mcp-server-docs",
   "version": "0.1.0",
   "private": true,
   "scripts": {

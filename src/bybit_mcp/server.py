@@ -6,7 +6,7 @@ import os
 from mcp.server.fastmcp import FastMCP
 from pybit.unified_trading import HTTP
 
-mcp = FastMCP("bybit-mcp")
+mcp = FastMCP("bybit-mcp-server")
 
 
 def _get_session() -> HTTP:
