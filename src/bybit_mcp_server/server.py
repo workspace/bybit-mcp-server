@@ -1,49 +1,57 @@
 """Bybit MCP Server implementation."""
 
 import json
-import os
 
 from mcp.server.fastmcp import FastMCP
-from pybit.unified_trading import HTTP
+from mcp.types import ToolAnnotations
+
+from bybit_mcp_server.decorators import execute_confirmed, get_impl, require_mode
+from bybit_mcp_server.tools.account import register_account_tools
+from bybit_mcp_server.tools.asset import register_asset_tools
+from bybit_mcp_server.tools.market import register_market_tools
+from bybit_mcp_server.tools.position import register_position_tools
+from bybit_mcp_server.tools.trade import register_trade_tools
 
 mcp = FastMCP("bybit-mcp-server")
 
+# Register all tool modules
+register_market_tools(mcp)
+register_account_tools(mcp)
+register_trade_tools(mcp)
+register_position_tools(mcp)
+register_asset_tools(mcp)
 
-def _get_session() -> HTTP:
-    """Create a pybit HTTP session from environment variables."""
-    testnet = os.getenv("BYBIT_TESTNET", "true").lower() == "true"
-    api_key = os.getenv("BYBIT_API_KEY", "")
-    api_secret = os.getenv("BYBIT_API_SECRET", "")
-
-    return HTTP(
-        testnet=testnet,
-        api_key=api_key or None,
-        api_secret=api_secret or None,
-    )
+# Cross-cutting confirmation tool
+WRITE_DESTRUCTIVE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, openWorldHint=True)
 
 
-@mcp.tool()
-async def get_tickers(category: str, symbol: str | None = None) -> str:
-    """Get latest price ticker for a symbol.
+@mcp.tool(annotations=WRITE_DESTRUCTIVE)
+@require_mode("trade")
+async def confirm_order(confirmation_id: str) -> str:
+    """Execute a previously prepared HIGH-risk operation after review.
+
+    When a HIGH-risk tool (place_order, amend_order, cancel_all_orders, set_leverage,
+    internal_transfer) is called, it returns a confirmation summary instead of executing.
+    Call this tool with the confirmation_id to actually execute the operation.
 
     Args:
-        category: Product type - spot, linear, inverse, option
-        symbol: Trading pair (e.g. BTCUSDT). If omitted, returns all tickers for the category.
+        confirmation_id: The confirmation_id returned by the HIGH-risk tool.
     """
-    session = _get_session()
-    params: dict = {"category": category}
-    if symbol:
-        params["symbol"] = symbol
-    result = session.get_tickers(**params)
-    return json.dumps(result["result"], indent=2)
+    pending = execute_confirmed(confirmation_id)
+    if pending is None:
+        return json.dumps(
+            {"error": "Confirmation not found or expired. Please retry the original operation."},
+            indent=2,
+        )
 
+    impl = get_impl(pending["tool"])
+    if impl is None:
+        return json.dumps(
+            {"error": f"No implementation found for tool: {pending['tool']}"},
+            indent=2,
+        )
 
-@mcp.tool()
-async def get_server_time() -> str:
-    """Get the current Bybit server time."""
-    session = _get_session()
-    result = session.get_server_time()
-    return json.dumps(result["result"], indent=2)
+    return await impl(**pending["kwargs"])
 
 
 def main():
